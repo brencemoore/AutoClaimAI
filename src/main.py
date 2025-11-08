@@ -5,14 +5,13 @@ import json
 from pathlib import Path
 from pipeline.report_generator import generate_report
 from pipeline.report_generator import aggregate_reports
+from pipeline.report_generator import save_report
 
-def main():
-    os.makedirs("outputs", exist_ok=True)
-    
+def main():    
     # Determine folder path based off of number of user arguments
     # Default to "input" folder if no arguments provided
     if len(sys.argv) == 1:
-        folder_path = Path(__file__).resolve().parent.parent / "input"
+        input_path = Path(__file__).resolve().parent.parent / "input"
         
     # Check for correct number of arguments 
     elif len(sys.argv) != 2:
@@ -21,15 +20,15 @@ def main():
 
     # Uses User provided folder path
     else:
-        folder_path = sys.argv[1]
+        input_path = sys.argv[1]
 
-    if not os.path.isdir(folder_path):
+    if not os.path.isdir(input_path):
         print("Invalid folder path.")
         return
 
     # Creates an array of images from the selected input folder
     supported_ext = (".jpg", ".jpeg", ".png", ".bmp")
-    images = [os.path.join(folder_path, f) for f in os.listdir(folder_path) 
+    images = [os.path.join(input_path, f) for f in os.listdir(input_path) 
               if f.lower().endswith(supported_ext)]
 
     if not images:
@@ -39,14 +38,12 @@ def main():
     # Generate and print aggregated report from each image   
     aggregated_report = aggregate_reports([generate_report(img) for img in images])
     
-    
+    # Print aggregated report to console
     print(f"\nAggregated Report:\n")
     print(json.dumps(aggregated_report, indent=4))
     
     # Save aggregated report to outputs folder
-    output_path = Path("outputs/aggregated_report.json")
-    with open(output_path, "w") as f:
-        json.dump(aggregated_report, f, indent=4)
+    save_report(aggregated_report)
 
 
 if __name__ == "__main__":
