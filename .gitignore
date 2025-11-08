@@ -209,3 +209,4 @@ __marimo__/
 # Generated report files
 outputs/
 input/*
+!input/.gitkeep
