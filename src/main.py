@@ -47,6 +47,8 @@ def main():
     output_path = Path("outputs/aggregated_report.json")
     with open(output_path, "w") as f:
         json.dump(aggregated_report, f, indent=4)
-    
+
+
 if __name__ == "__main__":
     main()
+    
