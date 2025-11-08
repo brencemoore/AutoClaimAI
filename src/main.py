@@ -4,6 +4,7 @@ import sys
 import json
 from pathlib import Path
 from pipeline.report_generator import generate_report
+from pipeline.report_generator import aggregate_reports
 
 def main():
     os.makedirs("outputs", exist_ok=True)
@@ -35,18 +36,17 @@ def main():
         print("No image files found.")
         return
 
-    # Generate and print report for each image
-    for img in images:
-        report = generate_report(img)
-        print(f"\n=== REPORT FOR ===\n")
-        print(f"Image path: {img}\n")
-        print(json.dumps(report, indent=2, sort_keys=False))
-        
-        # Save report to outputs folder
-        img_name = os.path.splitext(os.path.basename(img))[0]
-        output_path = Path("outputs") / f"{img_name}_report.json"
-        with open(output_path, "w") as f:
-            json.dump(report, f, indent=2)
-
+    # Generate and print aggregated report from each image   
+    aggregated_report = aggregate_reports([generate_report(img) for img in images])
+    
+    
+    print(f"\nAggregated Report:\n")
+    print(json.dumps(aggregated_report, indent=4))
+    
+    # Save aggregated report to outputs folder
+    output_path = Path("outputs/aggregated_report.json")
+    with open(output_path, "w") as f:
+        json.dump(aggregated_report, f, indent=4)
+    
 if __name__ == "__main__":
     main()
