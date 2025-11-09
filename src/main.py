@@ -3,9 +3,7 @@ import os
 import sys
 import json
 from pathlib import Path
-from pipeline.report_generator import generate_report
-from pipeline.report_generator import aggregate_reports
-from pipeline.report_generator import save_report
+import pipeline.report_generator as report_gen
 
 def main():    
     # Determine folder path based off of number of user arguments
@@ -36,15 +34,15 @@ def main():
         print("No image files found.")
         return
 
-    # Generate and print aggregated report from each image   
-    aggregated_report = aggregate_reports([generate_report(img) for img in images])
-    
+    # Generate and print aggregated report from each image
+    aggregated_report = report_gen.aggregate_reports([report_gen.generate_report(img) for img in images])
+
     # Print aggregated report to console
     print(f"Aggregated Report:")
     print(json.dumps(aggregated_report, indent=4))
     
     # Save aggregated report to outputs folder
-    save_report(aggregated_report)
+    report_gen.save_report(aggregated_report)
     
 
 if __name__ == "__main__":
