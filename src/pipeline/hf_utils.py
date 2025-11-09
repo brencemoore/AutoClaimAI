@@ -1,3 +1,6 @@
+# Currently broken
+# if you need to delete everything here go for it.
+
 import requests
 import os
 
