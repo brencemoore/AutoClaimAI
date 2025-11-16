@@ -1,13 +1,14 @@
 # Generates a report of the estimated costs based off of aggregated data from pipeline and user input.
 
 import json
+from .detect_damage import classify_damage, damage_severity
 
 def generate_report(image_path):
     
     # Placeholder data. Will be replaced with actual model inference and data extraction.
     make, model = "Toyota", "Camry"
-    damaged_part = "front bumper"
-    damaged_severities = "moderate"
+    damaged_part = classify_damage(image_path)
+    damaged_severity = damage_severity(image_path)
     part_cost = 1200
     labor_cost = 300
     estimated_cost = part_cost + labor_cost
@@ -22,7 +23,7 @@ def generate_report(image_path):
         "damaged_part":
         {
             "part": damaged_part,
-            "severity": damaged_severities,
+            "severity": damaged_severity,
             "part_cost": part_cost,
             "labor_cost": labor_cost,
             "estimated_cost": estimated_cost
