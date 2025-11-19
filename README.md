@@ -82,10 +82,9 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 - The program's pipeline is structured so that `main.py` calls the `report_generator` module. The `report_generator` module then calls functions from various other Python files, each of which uses an AI model to determine the values for variables needed to create the report and estimate costs. This modular approach allows for easy extension and maintenance of the codebase.
 
 ### Out-of-Scope Modules
-- The following modules are likely out of scope and not needed for the main workflow:
-	- `hf_utils.py`
-	- `preprocessing.py`
+- The following module is likely out of scope and not needed for the main workflow:
 	- `read_plate.py`
+    - As of now it is deleted, but if more time is available we can maybe implement this.
 
 ### Requirements and Dependencies
 - As development proceeds, add any new required libraries to `requirements.txt`.
