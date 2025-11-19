@@ -3,13 +3,13 @@ import os
 import sys
 import json
 from pathlib import Path
-import pipeline.report_generator as report_gen
+import src.pipeline.report_generator as report_gen
 
 def main():    
     # Determine folder path based off of number of user arguments
     # Default to "input" folder if no arguments provided
     if len(sys.argv) == 1:
-        input_path = Path(__file__).resolve().parent.parent / "input"
+        input_path = Path(__file__).resolve().parent / "input"
         print(f"\nIf you wish to select a specific input folder, please provide the folder path as a command line argument when running the program.\n")
         
     # Check for correct number of arguments 

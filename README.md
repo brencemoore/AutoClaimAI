@@ -38,12 +38,12 @@ All commands are run in the terminal. The exact usage format may depend on your 
 
 To process **all images** in the `input` folder:
 ```bash
-python src/main.py
+python main.py
 ```
 
 To process a **specific folder** of images:
 ```bash
-python src/main.py FILE_DIR
+python main.py FILE_DIR
 ```
 Replace `FILE_DIR` with the path to your image directory.
 
