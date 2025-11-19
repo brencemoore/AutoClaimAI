@@ -1,5 +1,5 @@
 '''
-Detects the make and model of the car from an image.
+Uses a pre-trained model to detect the make and model of the car from an image.
 '''
 
 # From 'https://huggingface.co/dima806/car_models_image_detection'

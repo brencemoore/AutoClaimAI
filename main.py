@@ -1,4 +1,8 @@
-# main file, runs report generator
+'''
+Main file to run the AutoClaimAI pipeline. Runs report_gernerator.py to generate a report based off
+of all images in a given input folder.
+'''
+
 import os
 import sys
 import json

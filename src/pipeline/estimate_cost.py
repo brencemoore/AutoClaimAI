@@ -1,13 +1,14 @@
-# This file is neccessary for the project and is in the scope.
+'''
+Estimates the cost of car repairs based on detected damage and car details.
+Will estimate labor, part, and total costs.
+'''
 
-# This file will use a table or some type of logic (not a model)
-# to estimate the cost of repair based on the detected damaged part
-# and the severity of the damage.
+# Will be a function to be called from report_generator.py
 
-# This may take inputs from detect_damage.py and be used in report_generator.py
 import json
 
 # Flat rate gathered from "https://autoleap.com/blog/average-automotive-repair-labor-rates-by-state/", gathered 15 November 2025
+# May not be relevant and may be better to generalize and not consider state.
 flat_rate_by_state = {
     {"Maine": 135},
     {"New_Hampshire": 127.5},

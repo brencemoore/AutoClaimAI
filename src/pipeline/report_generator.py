@@ -1,4 +1,6 @@
-# Generates a report of the estimated costs based off of aggregated data from pipeline and user input.
+'''
+Generates a report of the estimated costs based off of aggregated data from the pipeline and user input.
+'''
 
 import json
 from .detect_damage import classify_damage, damage_severity, classify_part

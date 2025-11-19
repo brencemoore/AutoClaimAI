@@ -1,5 +1,5 @@
 '''
-Uses pre-trained models to classify the type and severity of car damage from a given image.
+Uses pre-trained models to classify the type, severity, and part of a car that is damaged from a given image.
 '''
 
 # From 'https://huggingface.co/beingamit99/car_damage_detection'
