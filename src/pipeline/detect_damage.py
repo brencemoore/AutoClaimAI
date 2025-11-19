@@ -28,7 +28,7 @@ def damage_severity(image_path):
     # Extract classification probabilities
     probs = results[0].probs
     
-    severity = ['minor', 'moderate', 'severe']
+    severity = ['Minor', 'Moderate', 'Severe']
     
     return severity[probs.top1]
     
@@ -50,7 +50,7 @@ def classify_part(image_path):
     
     # Return 'unknown' if part cannot be determined
     if boxes is None or boxes.cls is None or len(boxes.cls) == 0:
-        return "unknown"
+        return "Unknown"
 
     # If there are detections, get the most confident one
     classes = boxes.cls.cpu().numpy()
@@ -58,7 +58,7 @@ def classify_part(image_path):
     best_idx = confidences.argmax()
     best_class = int(classes[best_idx])
     
-    parts = ['door', 'window', 'headlight', 'mirror', 'body/unknown', 'hood', 'bumper', 'wind shield']
+    parts = ['Door', 'Window', 'Headlight', 'Mirror', 'Body/Unknown', 'Hood', 'Bumper', 'Wind Shield']
 
     return parts[best_class]
 
