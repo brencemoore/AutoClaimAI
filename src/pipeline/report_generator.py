@@ -4,7 +4,7 @@ import json
 from .detect_damage import classify_damage, damage_severity, classify_part
 from .car_classification import classify_car
 
-def generate_report(image_path):
+def generate_report(image_path, car_year):
     
     # Placeholder data. Will be replaced with actual model inference and data extraction.
     make, model = classify_car(image_path)
@@ -20,7 +20,7 @@ def generate_report(image_path):
         {
             "make": make,
             "model": model,
-            "year": 2020
+            "year": car_year
         },
         "damaged_part":
         {

@@ -34,8 +34,10 @@ def main():
         print("No image files found.")
         return
 
+    car_year = input(f"\nEnter the year of your vehicle and press Enter to continue:  ")
+
     # Generate and print aggregated report from each image
-    aggregated_report = report_gen.aggregate_reports([report_gen.generate_report(img) for img in images])
+    aggregated_report = report_gen.aggregate_reports([report_gen.generate_report(img, car_year) for img in images])
 
     # Print aggregated report to console
     print(f"Aggregated Report:")
