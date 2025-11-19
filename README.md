@@ -2,8 +2,6 @@
 
 ### Remaining Tasks
 - The following components still need to be implemented or improved:
-	- Classifying the make and model of a vehicle (year can be user input)
-	- Classifying the part of the vehicle that is damaged (for cost estimation)
 	- Creating or integrating a cost table for estimation
 	- Evaluating each model used in the pipeline
 
