@@ -1,15 +1,18 @@
-# May be outside of scope of project
-# This would be used for video and detecting cars in video frames
-# However, the project scope is limited to images of damages,
-# so the car will not need to be detected.
+'''
+Detects the make and model of the car from an image.
+'''
 
-# This code is curently broken :/
-from hf_utils import call_hf_api, load_image_as_bytes
+# From 'https://huggingface.co/dima806/car_models_image_detection'
 
-model = "facebook/detr-resnet-101"   # Example model
-
-img = load_image_as_bytes("test_images/car1.jpg")
-result = call_hf_api(model, img, task_type="image")
-
-print(result)
+def classify_car(image_path):
+    from transformers import pipeline
+    pipe = pipeline("image-classification", model="dima806/car_models_image_detection")
+    result = pipe(image_path)
+    
+    make_and_model = result[0]["label"]
+    
+    make = make_and_model.split(' ')[0].capitalize()
+    model = make_and_model.split(' ')[1].capitalize()
+    
+    return make, model
 
