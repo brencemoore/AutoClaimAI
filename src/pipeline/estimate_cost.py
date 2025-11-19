@@ -3,6 +3,11 @@ Estimates the cost of car repairs based on detected damage and car details.
 Will estimate labor, part, and total costs.
 '''
 
+# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
+# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
+# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
+# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
+
 # Will be a function to be called from report_generator.py
 
 import json
