@@ -2,11 +2,12 @@
 
 import json
 from .detect_damage import classify_damage, damage_severity, classify_part
+from .car_classification import classify_car
 
 def generate_report(image_path):
     
     # Placeholder data. Will be replaced with actual model inference and data extraction.
-    make, model = "Toyota", "Camry"
+    make, model = classify_car(image_path)
     damaged_part = classify_part(image_path)
     type_of_damage = classify_damage(image_path)
     damaged_severity = damage_severity(image_path)
