@@ -3,10 +3,12 @@
 ### Remaining Tasks
 - The following components still need to be implemented or improved:
 	- Creating or integrating a cost table for estimation
-	- Evaluating each model used in the pipeline
+	- Evaluating cost estimation
+	- Evaluating damaged part classification
+	- Evaluating damaged part severity
+	- Evaluating the type of damage
 
 - The most critical parts to measure and refine are:
-	- Make and model classification
 	- Damaged part classification
 	- Cost table estimation
 
@@ -36,6 +38,10 @@ AutoClaimAI is an automated vehicle damage assessment tool that uses AI to detec
 	```
 	pip install -r requirements.txt
 	```
+
+## Requirements
+- Python 3.8+
+- See `requirements.txt` for required packages
 
 
 ## Usage
@@ -68,17 +74,42 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 ## Project Structure
 - `src/` - Main source code
 	- `pipeline/` - Core pipeline code (damage detection, classification, etc.)
+		- `car_classification.py` - Contains function for classifying make and model of a car
+		- `detect_damage.py` - Contains functions for classifying info from damaged parts of a car
+		- `estimate_cost.py` - Contains data and functions to estimate the cost of damages from aggregated data
+		- `report_generator.py` - A function that creates the output report files using functinos from `car_classification.py`, `detect_damage.py`, and `estimate_cost.py`
 	- `models/` - Locally stored models
+		- `car-damage.pt` - Stores pre-trained weights for classifying severity of damages
+		- `car-part.pt` - Stores pre-trained weights for classifying part that is damaged
 - `input/` - Folder for input images
 - `outputs/` - Folder for output reports (one `.json` per run)
 - `notebooks/` - Jupyter notebooks for evaluation
+	- `evaluate_car_classification.ipynb` - Creates a confusion matrix and measures precision, recall, and f1 for make and model classification
+- `main.py` - Runs entire AI pipeline
+- `requirements.txt` - Contains libraries needed that may not be pre-installed
 
 
-## Requirements
-- Python 3.8+
-- See `requirements.txt` for required packages
-
-
+## Model Source, Evaluation and Metrics Notebooks, and Dataset Links
+- Make and model:
+	- Model source:  https://huggingface.co/dima806/car_models_image_detection
+	- Google Colab notebook:  https://colab.research.google.com/drive/1OHagyo6YzcB0_K5hX7kqSqNKWhLvGGfv?usp=sharing
+	- Dataset used:  https://www.kaggle.com/datasets/ashfaqsyed/cars-collection-dataset/data
+- Damaged part:
+	- Model source:  https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8
+	- Google Colab notebook:  
+	- Dataset used:  
+- Damage severity:
+	- Model source:  https://huggingface.co/nezahatkorkmaz/car-damage-level-detection-yolov8
+	- Google Colab notebook:  
+	- Dataset used:  
+- Damage type:
+	- Model source:  https://huggingface.co/beingamit99/car_damage_detection
+	- Google Colab notebook:  
+	- Dataset used:  
+- Cost prediction:
+	- Model source:  
+	- Google Colab notebook:  
+	- Dataset used:  
 
 ## Developer Notes
 
