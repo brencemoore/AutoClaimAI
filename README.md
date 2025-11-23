@@ -10,6 +10,12 @@
 	- Damaged part classification
 	- Cost table estimation
 
+# Data source for repair times and parts
+https://charm.li/ - free open sources is fairly comprehensive from 1986 to 2013
+https://vehicledatabases.com/ has a VIN decoding api for searching for vehicle data and parts + labor pricing
+Carvis.ai AI native tool for doing the same as vehicle database in an AI native way
+https://www.motor.com/wp-content/uploads/daas-estimated-work-times-product-description.pdf - RESTful api call that provides up to date parts and labor times along with cost estimates paid
+
 # AutoClaimAI
 
 AutoClaimAI is an automated vehicle damage assessment tool that uses AI to detect, classify, and estimate the severity of car damages from images. It processes images in bulk or individually and generates structured reports to assist with insurance claims or repair estimates.
