@@ -7,7 +7,7 @@ Uses pre-trained models to classify the type, severity, and part of a car that i
 # Classifies the type of damage on the car
 def classify_damage(image_path):
     from transformers import pipeline
-    pipe = pipeline("image-classification", model="beingamit99/car_damage_detection")
+    pipe = pipeline("image-classification", model="beingamit99/car_damage_detection", device=0, use_fast=True)
     result = pipe(image_path)
     print(f'Results: {result}')
     best = max(result, key=lambda x: x['score'])
