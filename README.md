@@ -11,7 +11,10 @@
 	- Damaged part classification
 	- Cost table estimation
 
-# Data source for repair times and parts
+### Notebooks for evaluation
+- If you want to make your own evaluation create a google colab notebook and upload your data and/or weight to drive and develop that way.
+
+### Data source for repair times and parts
 https://charm.li/ - free open sources is fairly comprehensive from 1986 to 2013
 https://vehicledatabases.com/ has a VIN decoding api for searching for vehicle data and parts + labor pricing
 Carvis.ai AI native tool for doing the same as vehicle database in an AI native way
