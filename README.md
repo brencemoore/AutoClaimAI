@@ -96,8 +96,8 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 	- Dataset used:  https://www.kaggle.com/datasets/ashfaqsyed/cars-collection-dataset/data
 - Damaged part:
 	- Model source:  https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8
-	- Google Colab notebook:  
-	- Dataset used:  
+	- Google Colab notebook:  https://colab.research.google.com/drive/1ubblz5FCEhtWhqSUsrH4MnHS5meu-kyq?usp=sharing
+	- Dataset used:  https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8 (had to do a lot of cleaning)
 - Damage severity:
 	- Model source:  https://huggingface.co/nezahatkorkmaz/car-damage-level-detection-yolov8
 	- Google Colab notebook:  
