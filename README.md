@@ -4,7 +4,6 @@
 - The following components still need to be implemented or improved:
 	- Creating or integrating a cost table for estimation
 	- Evaluating cost estimation
-	- Evaluating damaged part classification
 	- Evaluating damaged part severity
 	- Evaluating the type of damage
 
