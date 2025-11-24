@@ -7,55 +7,12 @@ import json
 from typing import Dict, List
 
 # Popular online auto parts retailers
-PARTS_RETAILERS = {
-    "RockAuto": {
-        "url": "https://www.rockauto.com",
-        "search_url": "https://www.rockauto.com/en/catalog/{year},{make},{model}",
-        "pros": ["Huge selection", "Competitive prices", "Parts diagrams"],
-        "cons": ["Shipping can be expensive", "Multiple warehouses"],
-        "quality_tiers": ["Economy", "Daily Driver", "Premium"]
-    },
-    "PartsGeek": {
-        "url": "https://www.partsgeek.com",
-        "search_url": "https://www.partsgeek.com/catalog/{year}/{make}/{model}",
-        "pros": ["Free shipping over $99", "Good customer service", "Fast shipping"],
-        "cons": ["Limited premium brands"],
-        "quality_tiers": ["Value", "Standard", "Premium"]
-    },
-    "AutoZone": {
-        "url": "https://www.autozone.com",
-        "search_url": "https://www.autozone.com/parts/{year}/{make}/{model}",
-        "pros": ["Local pickup available", "Rewards program", "In-store support"],
-        "cons": ["Higher prices", "Limited body parts"],
-        "quality_tiers": ["Economy", "Standard"]
-    },
-    "CarParts.com": {
-        "url": "https://www.carparts.com",
-        "search_url": "https://www.carparts.com/{year}-{make}-{model}",
-        "pros": ["90-day returns", "Good warranties", "Fast shipping"],
-        "cons": ["Limited selection on older cars"],
-        "quality_tiers": ["Standard", "Premium"]
-    },
-    "1A Auto": {
-        "url": "https://www.1aauto.com",
-        "search_url": "https://www.1aauto.com/{year}-{make}-{model}",
-        "pros": ["Video installation guides", "Good quality", "Detailed fitment"],
-        "cons": ["Slightly higher prices"],
-        "quality_tiers": ["Standard", "Premium"]
-    }
-}
+with open("./src/cost_data/parts_retailers.json", "r") as f:
+    PARTS_RETAILERS = json.load(f)
 
 # Part name mapping for better search results
-PART_SEARCH_TERMS = {
-    "Door": ["door shell", "door panel", "door skin"],
-    "Bumper": ["bumper cover", "front bumper", "rear bumper"],
-    "Hood": ["hood panel", "hood assembly"],
-    "Window": ["door glass", "window regulator", "side window"],
-    "Headlight": ["headlight assembly", "headlamp", "head light"],
-    "Mirror": ["side mirror", "door mirror", "mirror assembly"],
-    "Body/Unknown": ["body panel", "fender", "quarter panel"],
-    "Wind Shield": ["windshield", "front glass", "windscreen"]
-}
+with open("./src/cost_data/part_search_terms.json", "r") as f:
+    PART_SEARCH_TERMS = json.load(f)
 
 
 def generate_shopping_options(part: str, estimated_cost: float) -> List[Dict]:

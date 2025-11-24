@@ -1,0 +1,10 @@
+{
+  "Door": ["door shell", "door panel", "door skin"],
+  "Bumper": ["bumper cover", "front bumper", "rear bumper"],
+  "Hood": ["hood panel", "hood assembly"],
+  "Window": ["door glass", "window regulator", "side window"],
+  "Headlight": ["headlight assembly", "headlamp", "head light"],
+  "Mirror": ["side mirror", "door mirror", "mirror assembly"],
+  "Body/Unknown": ["body panel", "fender", "quarter panel"],
+  "Wind Shield": ["windshield", "front glass", "windscreen"]
+}
