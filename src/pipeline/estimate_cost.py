@@ -7,86 +7,28 @@ import json
 from pathlib import Path
 
 # Labor rates by state ($/hour) - Source: autoleap.com
-LABOR_RATES = {
-    "Maine": 135, "New_Hampshire": 127.5, "Vermont": 122.5, "Massachusetts": 132.5,
-    "Rhode_Island": 125, "Connecticut": 132.5, "New_York": 137.5, "New_Jersey": 142.5,
-    "Pennsylvania": 137.5, "Ohio": 135, "Michigan": 140, "Indiana": 140,
-    "Illinois": 132.5, "Wisconsin": 137.5, "Minnesota": 142.5, "Iowa": 137.5,
-    "Missouri": 142.5, "North_Dakota": 137.5, "South_Dakota": 140, "Nebraska": 142.5,
-    "Kansas": 142.5, "Delaware": 137.5, "Maryland": 140, "Virginia": 137.5,
-    "West_Virginia": 142.5, "North_Carolina": 95, "South_Carolina": 137.5,
-    "Georgia": 145, "Florida": 142.5, "Kentucky": 145, "Tennessee": 145,
-    "Mississippi": 152.5, "Alabama": 145, "Oklahoma": 142.5, "Texas": 142.5,
-    "Arkansas": 145, "Louisiana": 145, "Idaho": 137.5, "Montana": 145,
-    "Wyoming": 152.5, "Nevada": 135, "Utah": 137.5, "Colorado": 142.5,
-    "Arizona": 132.5, "New_Mexico": 140, "Alaska": 142.5, "Washington": 140,
-    "Oregon": 135, "California": 165, "Hawaii": 130
-}
+
+with open("./src/cost_data/labor_rates.json", "r") as f:
+    LABOR_RATES = json.load(f)
 
 # National average labor rate
-NATIONAL_AVG_LABOR_RATE = 140  # $/hour
+NATIONAL_AVG_LABOR_RATE = LABOR_RATES.get("National_Average")  # $/hour
 
 # Labor time estimates (hours) based on damage type and severity
 # Format: {part: {severity: {damage_type: hours}}}
-LABOR_TIME_TABLE = {
-    "Door": {
-        "Minor": {"dent": 1.5, "scratch": 1.0, "damage": 2.0},
-        "Moderate": {"dent": 3.0, "scratch": 2.5, "damage": 4.0},
-        "Severe": {"dent": 5.0, "scratch": 4.0, "damage": 8.0}
-    },
-    "Bumper": {
-        "Minor": {"dent": 1.0, "scratch": 1.5, "damage": 2.0},
-        "Moderate": {"dent": 2.5, "scratch": 2.0, "damage": 3.5},
-        "Severe": {"dent": 4.0, "scratch": 3.5, "damage": 6.0}
-    },
-    "Hood": {
-        "Minor": {"dent": 2.0, "scratch": 1.5, "damage": 2.5},
-        "Moderate": {"dent": 3.5, "scratch": 3.0, "damage": 5.0},
-        "Severe": {"dent": 6.0, "scratch": 5.0, "damage": 8.0}
-    },
-    "Window": {
-        "Minor": {"crack": 0.5, "scratch": 0.5, "damage": 1.0},
-        "Moderate": {"crack": 1.0, "scratch": 1.0, "damage": 1.5},
-        "Severe": {"crack": 2.0, "scratch": 1.5, "damage": 2.5}
-    },
-    "Headlight": {
-        "Minor": {"crack": 0.5, "scratch": 0.5, "damage": 1.0},
-        "Moderate": {"crack": 1.0, "scratch": 0.75, "damage": 1.5},
-        "Severe": {"crack": 1.5, "scratch": 1.0, "damage": 2.0}
-    },
-    "Mirror": {
-        "Minor": {"crack": 0.5, "scratch": 0.5, "damage": 1.0},
-        "Moderate": {"crack": 1.0, "scratch": 0.75, "damage": 1.5},
-        "Severe": {"crack": 1.5, "scratch": 1.0, "damage": 2.5}
-    },
-    "Body/Unknown": {
-        "Minor": {"dent": 2.0, "scratch": 1.5, "damage": 2.5},
-        "Moderate": {"dent": 4.0, "scratch": 3.0, "damage": 5.0},
-        "Severe": {"dent": 6.0, "scratch": 4.5, "damage": 8.0}
-    },
-    "Wind Shield": {
-        "Minor": {"crack": 1.0, "scratch": 1.0, "damage": 1.5},
-        "Moderate": {"crack": 2.0, "scratch": 1.5, "damage": 2.5},
-        "Severe": {"crack": 3.0, "scratch": 2.0, "damage": 4.0}
-    }
-}
+
+with open("./src/cost_data/labor_time_table.json", "r") as f:
+    LABOR_TIME_TABLE = json.load(f)
 
 # Part cost estimates ($) based on part type and severity
 # Format: {part: {severity: base_cost}}
-PART_COST_TABLE = {
-    "Door": {"Minor": 200, "Moderate": 500, "Severe": 1200},
-    "Bumper": {"Minor": 150, "Moderate": 400, "Severe": 900},
-    "Hood": {"Minor": 250, "Moderate": 600, "Severe": 1400},
-    "Window": {"Minor": 100, "Moderate": 250, "Severe": 450},
-    "Headlight": {"Minor": 150, "Moderate": 300, "Severe": 600},
-    "Mirror": {"Minor": 100, "Moderate": 200, "Severe": 400},
-    "Body/Unknown": {"Minor": 300, "Moderate": 700, "Severe": 1500},
-    "Wind Shield": {"Minor": 200, "Moderate": 400, "Severe": 800}
-}
+
+with open("./src/cost_data/part_cost_table.json", "r") as f:
+    PART_COST_TABLE = json.load(f)
 
 # Default values for unknown cases
-DEFAULT_LABOR_HOURS = 3.0
-DEFAULT_PART_COST = 500
+DEFAULT_LABOR_HOURS = LABOR_TIME_TABLE.get("Default")
+DEFAULT_PART_COST = PART_COST_TABLE.get("Default")
 
 
 def get_labor_hours(part, severity, damage_type):
