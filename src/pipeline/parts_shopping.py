@@ -302,10 +302,10 @@ def format_shopping_report(shopping_guides: List[Dict], vehicle_info: Dict,
             lines.append(f"   Warranty: {option['warranty']}")
             lines.append(f"   Source: {option['source']}")
             lines.append(f"   ")
-            lines.append(f"   ✓ Pros: {', '.join(option['pros'])}")
-            lines.append(f"   ✗ Cons: {', '.join(option['cons'])}")
+            lines.append(f"   Pros: {', '.join(option['pros'])}")
+            lines.append(f"   Cons: {', '.join(option['cons'])}")
             lines.append(f"   ")
-            lines.append(f"   💡 Best For: {option['best_for']}")
+            lines.append(f"   Best For: {option['best_for']}")
             lines.append("")
         
         # Where to Buy
@@ -314,7 +314,7 @@ def format_shopping_report(shopping_guides: List[Dict], vehicle_info: Dict,
         lines.append("")
         
         for retailer in guide['where_to_buy']:
-            lines.append(f"🔗 {retailer['name']}")
+            lines.append(f" {retailer['name']}")
             lines.append(f"   {retailer['url']}")
             lines.append(f"   Search for: {', '.join(retailer['search_terms'])}")
             lines.append(f"   Quality tiers: {', '.join(retailer['quality_tiers'])}")
@@ -328,7 +328,7 @@ def format_shopping_report(shopping_guides: List[Dict], vehicle_info: Dict,
     lines.append("=" * 80)
     lines.append("")
     for tip in shopping_guides[0]['tips']:  # Tips are the same for all
-        lines.append(f"• {tip}")
+        lines.append(f"- {tip}")
     lines.append("")
     
     # Paint Note
@@ -336,16 +336,16 @@ def format_shopping_report(shopping_guides: List[Dict], vehicle_info: Dict,
     lines.append("IMPORTANT NOTES")
     lines.append("=" * 80)
     lines.append("")
-    lines.append("🎨 PAINTING: Most body parts require professional painting after installation.")
+    lines.append(" PAINTING: Most body parts require professional painting after installation.")
     lines.append("   Paint costs typically range from $200-$500 per panel depending on:")
     lines.append("   - Single stage vs. multi-stage paint")
     lines.append("   - Color matching complexity")
     lines.append("   - Clear coat and finish quality")
     lines.append("")
-    lines.append("🔧 INSTALLATION: Labor costs vary by shop and location.")
+    lines.append(" INSTALLATION: Labor costs vary by shop and location.")
     lines.append("   Consider getting quotes from multiple repair shops.")
     lines.append("")
-    lines.append("📋 INSURANCE: If filing a claim, check with your insurance about:")
+    lines.append(" INSURANCE: If filing a claim, check with your insurance about:")
     lines.append("   - Approved repair shops")
     lines.append("   - OEM vs aftermarket parts requirements")
     lines.append("   - Your deductible and coverage limits")
