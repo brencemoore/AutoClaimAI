@@ -9,7 +9,7 @@ import os
 import sys
 import json
 from pathlib import Path
-import src.pipeline.agg_report_generator as report_gen
+import src.pipeline.report_generator as report_gen
 
 def print_banner():
     """Print a nice banner for the application"""
