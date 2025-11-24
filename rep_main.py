@@ -61,7 +61,7 @@ def main():
         input_path = sys.argv[1]
 
     if not os.path.isdir(input_path):
-        print(f"❌ Error: Invalid folder path: {input_path}")
+        print(f"Error: Invalid folder path: {input_path}")
         return
 
     # Find images
@@ -70,7 +70,7 @@ def main():
               if f.lower().endswith(supported_ext)]
 
     if not images:
-        print(f"❌ Error: No image files found in {input_path}")
+        print(f"Error: No image files found in {input_path}")
         print(f"Supported formats: {', '.join(supported_ext)}")
         return
 
@@ -90,14 +90,14 @@ def main():
         try:
             report = report_gen.generate_report(img, car_year, state, include_shopping)
             reports.append(report)
-            print(f"    ✓ Complete - {report['damaged_part']['part']} ({report['damaged_part']['severity']})")
+            print(f"Complete - {report['damaged_part']['part']} ({report['damaged_part']['severity']})")
         except Exception as e:
-            print(f"    ❌ Error: {e}")
+            print(f"Error: {e}")
             import traceback
             traceback.print_exc()
     
     if not reports:
-        print("\n❌ No reports generated successfully.")
+        print("\nNo reports generated successfully.")
         return
 
     # Generate aggregated report
@@ -139,7 +139,7 @@ def main():
     if include_shopping and "shopping_guides" in aggregated_report:
         shopping_output = report_gen.save_shopping_guide_text(aggregated_report)
         if shopping_output:
-            print(f"\n💡 TIP: Check the shopping guide for where to buy parts!")
+            print(f"\nTIP: Check the shopping guide for where to buy parts!")
             print(f"   File: {shopping_output}")
     
     # Print next steps
@@ -162,15 +162,15 @@ def main():
         print(f"2. Get quotes from local repair shops")
         print(f"3. Run again with shopping guide for parts pricing info")
     
-    print("\n📊 Report complete! Thank you for using AutoClaimAI.")
+    print("\nReport complete! Thank you for using AutoClaimAI.")
     print("="*70 + "\n")
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n⚠️  Process interrupted by user")
+        print("\n\nProcess interrupted by user")
     except Exception as e:
-        print(f"\n\n❌ Unexpected error: {e}")
+        print(f"\n\nUnexpected error: {e}")
         import traceback
         traceback.print_exc()
