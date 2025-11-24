@@ -1,5 +1,5 @@
 '''
-Main file to run the AutoClaimAI pipeline. Runs report_gernerator.py to generate a report based off
+Main file to run the AutoClaimAI pipeline. Runs report_generator.py to generate a report based off
 of all images in a given input folder.
 '''
 
@@ -17,8 +17,8 @@ def main():
         print(f"\nIf you wish to select a specific input folder, please provide the folder path as a command line argument when running the program.\n")
         
     # Check for correct number of arguments 
-    elif len(sys.argv) != 2:
-        print("Usage: python main.py /path/to/image_folder")
+    elif len(sys.argv) > 2:
+        print("Usage: python main.py [/path/to/image_folder]")
         return
 
     # Uses User provided folder path
@@ -38,14 +38,42 @@ def main():
         print("No image files found.")
         return
 
-    car_year = input(f"\nEnter the year of your vehicle and press Enter to continue:  ")
+    # Get user input for vehicle details
+    car_year = input(f"\nEnter the year of your vehicle: ")
+    state = input(f"Enter your state (or press Enter to use national average): ").strip()
+    
+    # Use None if no state provided
+    if not state:
+        state = None
+    else:
+        # Convert to proper format (e.g., "New York" -> "New_York")
+        state = state.replace(" ", "_")
+    
+    print(f"\nProcessing {len(images)} image(s)...\n")
+
+    # Generate reports for each image
+    reports = []
+    for i, img in enumerate(images, 1):
+        print(f"Processing image {i}/{len(images)}: {os.path.basename(img)}")
+        try:
+            report = report_gen.generate_report(img, car_year, state)
+            reports.append(report)
+        except Exception as e:
+            print(f"  Error processing {os.path.basename(img)}: {e}")
+    
+    if not reports:
+        print("\nNo reports generated successfully.")
+        return
 
     # Generate and print aggregated report from each image
-    aggregated_report = report_gen.aggregate_reports([report_gen.generate_report(img, car_year) for img in images])
+    aggregated_report = report_gen.aggregate_reports(reports)
 
     # Print aggregated report to console
-    print(f"Aggregated Report:")
+    print(f"\n{'='*60}")
+    print(f"DAMAGE ASSESSMENT REPORT")
+    print(f"{'='*60}")
     print(json.dumps(aggregated_report, indent=4))
+    print(f"{'='*60}\n")
     
     # Save aggregated report to outputs folder
     report_gen.save_report(aggregated_report)
@@ -53,4 +81,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
