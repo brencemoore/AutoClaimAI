@@ -1,6 +1,8 @@
 '''
 Main file to run the AutoClaimAI pipeline. Runs report_generator.py to generate a report based off
 of all images in a given input folder.
+
+Includes shopping guide feature without requiring API keys.
 '''
 
 import os
@@ -9,75 +11,168 @@ import json
 from pathlib import Path
 import src.pipeline.report_generator as report_gen
 
+def print_banner():
+    """Print a nice banner for the application"""
+    print("\n" + "="*70)
+    print(" "*20 + "AUTO CLAIM AI")
+    print(" "*15 + "Vehicle Damage Assessment")
+    print("="*70 + "\n")
+
+def get_user_input():
+    """Get user input for vehicle details and options"""
+    print("VEHICLE INFORMATION")
+    print("-" * 70)
+    
+    car_year = input("Enter the year of your vehicle: ").strip()
+    while not car_year.isdigit() or len(car_year) != 4:
+        print("Please enter a valid 4-digit year (e.g., 2020)")
+        car_year = input("Enter the year of your vehicle: ").strip()
+    
+    state = input("Enter your state (or press Enter for national average): ").strip()
+    if state:
+        state = state.replace(" ", "_")
+    else:
+        state = None
+    
+    # Ask about shopping guide
+    print("\nREPORT OPTIONS")
+    print("-" * 70)
+    print("Would you like to include a parts shopping guide?")
+    print("This will provide price ranges and links to online retailers.")
+    
+    include_shopping = input("Include shopping guide? (Y/n): ").strip().lower()
+    include_shopping = include_shopping != 'n'  # Default to yes unless they say no
+    
+    return car_year, state, include_shopping
+
 def main():    
+    print_banner()
+    
     # Determine folder path based off of number of user arguments
-    # Default to "input" folder if no arguments provided
     if len(sys.argv) == 1:
         input_path = Path(__file__).resolve().parent / "input"
-        print(f"\nIf you wish to select a specific input folder, please provide the folder path as a command line argument when running the program.\n")
+        print(f"Using default input folder: {input_path}")
+        print(f"Tip: Run 'python main.py /path/to/folder' to use a different folder\n")
         
-    # Check for correct number of arguments 
     elif len(sys.argv) > 2:
         print("Usage: python main.py [/path/to/image_folder]")
         return
-
-    # Uses User provided folder path
     else:
         input_path = sys.argv[1]
 
     if not os.path.isdir(input_path):
-        print("Invalid folder path.")
+        print(f"❌ Error: Invalid folder path: {input_path}")
         return
 
-    # Creates an array of images from the selected input folder
+    # Find images
     supported_ext = (".jpg", ".jpeg", ".png", ".bmp")
     images = [os.path.join(input_path, f) for f in os.listdir(input_path) 
               if f.lower().endswith(supported_ext)]
 
     if not images:
-        print("No image files found.")
+        print(f"❌ Error: No image files found in {input_path}")
+        print(f"Supported formats: {', '.join(supported_ext)}")
         return
 
-    # Get user input for vehicle details
-    car_year = input(f"\nEnter the year of your vehicle: ")
-    state = input(f"Enter your state (or press Enter to use national average): ").strip()
+    print(f"Found {len(images)} image(s) to process\n")
     
-    # Use None if no state provided
-    if not state:
-        state = None
-    else:
-        # Convert to proper format (e.g., "New York" -> "New_York")
-        state = state.replace(" ", "_")
+    # Get user input
+    car_year, state, include_shopping = get_user_input()
     
-    print(f"\nProcessing {len(images)} image(s)...\n")
+    print(f"\n{'='*70}")
+    print("PROCESSING IMAGES")
+    print("="*70 + "\n")
 
     # Generate reports for each image
     reports = []
     for i, img in enumerate(images, 1):
-        print(f"Processing image {i}/{len(images)}: {os.path.basename(img)}")
+        print(f"[{i}/{len(images)}] Processing: {os.path.basename(img)}")
         try:
-            report = report_gen.generate_report(img, car_year, state)
+            report = report_gen.generate_report(img, car_year, state, include_shopping)
             reports.append(report)
+            print(f"    ✓ Complete - {report['damaged_part']['part']} ({report['damaged_part']['severity']})")
         except Exception as e:
-            print(f"  Error processing {os.path.basename(img)}: {e}")
+            print(f"    ❌ Error: {e}")
+            import traceback
+            traceback.print_exc()
     
     if not reports:
-        print("\nNo reports generated successfully.")
+        print("\n❌ No reports generated successfully.")
         return
 
-    # Generate and print aggregated report from each image
+    # Generate aggregated report
+    print(f"\n{'='*70}")
+    print("GENERATING REPORT")
+    print("="*70 + "\n")
+    
     aggregated_report = report_gen.aggregate_reports(reports)
 
-    # Print aggregated report to console
-    print(f"\n{'='*60}")
-    print(f"DAMAGE ASSESSMENT REPORT")
-    print(f"{'='*60}")
-    print(json.dumps(aggregated_report, indent=4))
-    print(f"{'='*60}\n")
+    # FIX THIS FORSAKEN TRASH
+
+    # Print summary to console
+    print("DAMAGE ASSESSMENT SUMMARY")
+    print("-" * 70)
+    print(f"Vehicle: {aggregated_report['vehicle']['year']} "
+          f"{aggregated_report['vehicle']['make']} "
+          f"{aggregated_report['vehicle']['model']}")
+    print(f"\nTotal Damages Found: {aggregated_report['summary']['total_damages']}")
+    print(f"Total Part Cost:     ${aggregated_report['summary']['total_part_cost']:.2f}")
+    print(f"Total Labor Hours:   {aggregated_report['summary']['total_labor_hours']:.2f} hrs")
+    print(f"Total Labor Cost:    ${aggregated_report['summary']['total_labor_cost']:.2f}")
+    print(f"\nTOTAL ESTIMATE:      ${aggregated_report['summary']['total_estimated_cost']:.2f}")
+    print("-" * 70)
     
-    # Save aggregated report to outputs folder
-    report_gen.save_report(aggregated_report)
+    # Show damage details
+    print("\nDAMAGES DETECTED:")
+    for i, part in enumerate(aggregated_report['damaged_parts'], 1):
+        print(f"\n{i}. {part['part']}")
+        print(f"   Type: {part['type_of_damage']} | Severity: {part['severity']}")
+        print(f"   Cost: ${part['estimated_cost']:.2f} "
+              f"(Parts: ${part['part_cost']:.2f} + Labor: ${part['labor_cost']:.2f})")
     
+    # Save reports
+    print(f"\n{'='*70}")
+    print("SAVING REPORTS")
+    print("="*70 + "\n")
+    
+    json_output = report_gen.save_report(aggregated_report)
+    
+    # Save shopping guide if included
+    if include_shopping and "shopping_guides" in aggregated_report:
+        shopping_output = report_gen.save_shopping_guide_text(aggregated_report)
+        if shopping_output:
+            print(f"\n💡 TIP: Check the shopping guide for where to buy parts!")
+            print(f"   File: {shopping_output}")
+    
+    # Print next steps
+    print(f"\n{'='*70}")
+    print("NEXT STEPS")
+    print("="*70)
+    
+    if include_shopping:
+        print(f"\n1. Review detailed cost breakdown: {json_output}")
+        print(f"2. Check shopping guide for parts pricing options")
+        print(f"3. Visit online retailers to compare actual prices:")
+        print(f"   • RockAuto.com - Huge selection, competitive prices")
+        print(f"   • PartsGeek.com - Free shipping over $99")
+        print(f"   • CarParts.com - 90-day returns")
+        print(f"   • 1AAuto.com - Video installation guides")
+        print(f"4. Get quotes from local repair shops for labor")
+        print(f"5. Consider part quality vs. vehicle age/value")
+    else:
+        print(f"\n1. Review detailed cost breakdown: {json_output}")
+        print(f"2. Get quotes from local repair shops")
+        print(f"3. Run again with shopping guide for parts pricing info")
+    
+    print("\n📊 Report complete! Thank you for using AutoClaimAI.")
+    print("="*70 + "\n")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\n⚠️  Process interrupted by user")
+    except Exception as e:
+        print(f"\n\n❌ Unexpected error: {e}")
+        import traceback
+        traceback.print_exc()
