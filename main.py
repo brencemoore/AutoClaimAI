@@ -107,25 +107,7 @@ def main():
     aggregated_report = report_gen.aggregate_reports(reports)
 
     # Print summary to console
-    print("DAMAGE ASSESSMENT SUMMARY")
-    print("-" * 70)
-    print(f"Vehicle: {aggregated_report['vehicle']['year']} "
-          f"{aggregated_report['vehicle']['make']} "
-          f"{aggregated_report['vehicle']['model']}")
-    print(f"\nTotal Damages Found: {aggregated_report['summary']['total_damages']}")
-    print(f"Total Part Cost:     ${aggregated_report['summary']['total_part_cost']:.2f}")
-    print(f"Total Labor Hours:   {aggregated_report['summary']['total_labor_hours']:.2f} hrs")
-    print(f"Total Labor Cost:    ${aggregated_report['summary']['total_labor_cost']:.2f}")
-    print(f"\nTOTAL ESTIMATE:      ${aggregated_report['summary']['total_estimated_cost']:.2f}")
-    print("-" * 70)
-    
-    # Show damage details
-    print("\nDAMAGES DETECTED:")
-    for i, part in enumerate(aggregated_report['damaged_parts'], 1):
-        print(f"\n{i}. {part['part']}")
-        print(f"   Type: {part['type_of_damage']} | Severity: {part['severity']}")
-        print(f"   Cost: ${part['estimated_cost']:.2f} "
-              f"(Parts: ${part['part_cost']:.2f} + Labor: ${part['labor_cost']:.2f})")
+    report_gen.print_report_summary(aggregated_report)
     
     # Save reports
     print(f"\n{'='*70}")
@@ -147,30 +129,7 @@ def main():
             print(f"   File: {shopping_output}")
     
     # Print next steps
-    print(f"\n{'='*70}")
-    print("NEXT STEPS")
-    print("="*70)
-    
-    if include_shopping:
-        print(f"\n1. Review reports:")
-        print(f"   • Complete breakdown: {json_output}")
-        print(f"   • Parts only: {parts_output}")
-        print(f"   • Labor only: {labor_output}")
-        print(f"2. Check shopping guide for parts pricing options")
-        print(f"3. Visit online retailers to compare actual prices:")
-        print(f"   • RockAuto.com - Huge selection, competitive prices")
-        print(f"   • PartsGeek.com - Free shipping over $99")
-        print(f"   • CarParts.com - 90-day returns")
-        print(f"   • 1AAuto.com - Video installation guides")
-        print(f"4. Get quotes from local repair shops for labor")
-        print(f"5. Consider part quality vs. vehicle age/value")
-    else:
-        print(f"\n1. Review reports:")
-        print(f"   • Complete breakdown: {json_output}")
-        print(f"   • Parts only: {parts_output}")
-        print(f"   • Labor only: {labor_output}")
-        print(f"2. Get quotes from local repair shops")
-        print(f"3. Run again with shopping guide for parts pricing info")
+    report_gen.print_next_steps(json_output, parts_output, labor_output)
     
     print("\nReport complete! Thank you for using AutoClaimAI.")
     print("="*70 + "\n")
