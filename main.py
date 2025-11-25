@@ -7,7 +7,6 @@ Includes shopping guide feature without requiring API keys.
 
 import os
 import sys
-import json
 from pathlib import Path
 import src.pipeline.report_generator as report_gen
 
@@ -133,7 +132,12 @@ def main():
     print("SAVING REPORTS")
     print("="*70 + "\n")
     
+    # Save complete report (original)
     json_output = report_gen.save_report(aggregated_report)
+    
+    # Save separate parts and labor reports
+    parts_output = report_gen.save_parts_report(aggregated_report)
+    labor_output = report_gen.save_labor_report(aggregated_report)
     
     # Save shopping guide if included
     if include_shopping and "shopping_guides" in aggregated_report:
@@ -148,7 +152,10 @@ def main():
     print("="*70)
     
     if include_shopping:
-        print(f"\n1. Review detailed cost breakdown: {json_output}")
+        print(f"\n1. Review reports:")
+        print(f"   • Complete breakdown: {json_output}")
+        print(f"   • Parts only: {parts_output}")
+        print(f"   • Labor only: {labor_output}")
         print(f"2. Check shopping guide for parts pricing options")
         print(f"3. Visit online retailers to compare actual prices:")
         print(f"   • RockAuto.com - Huge selection, competitive prices")
@@ -158,7 +165,10 @@ def main():
         print(f"4. Get quotes from local repair shops for labor")
         print(f"5. Consider part quality vs. vehicle age/value")
     else:
-        print(f"\n1. Review detailed cost breakdown: {json_output}")
+        print(f"\n1. Review reports:")
+        print(f"   • Complete breakdown: {json_output}")
+        print(f"   • Parts only: {parts_output}")
+        print(f"   • Labor only: {labor_output}")
         print(f"2. Get quotes from local repair shops")
         print(f"3. Run again with shopping guide for parts pricing info")
     

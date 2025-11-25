@@ -4,6 +4,9 @@ Includes shopping guide without requiring API keys.
 '''
 
 import json
+import os
+from pathlib import Path
+from datetime import datetime
 from .detect_damage import classify_damage, damage_severity, classify_part
 from .car_classification import classify_car
 from .estimate_cost import estimate_repair_cost
@@ -119,6 +122,7 @@ def aggregate_reports(reports):
 
     aggregated_report = {
         "vehicle": vehicle_info,
+        "timestamp": datetime.now().isoformat(),
         "damaged_parts": damaged_parts,
         "summary": {
             "total_damages": len(damaged_parts),
@@ -144,8 +148,6 @@ def save_report(report, output_dir="outputs"):
         report: The report dictionary to save
         output_dir: Directory to save the report (default: "outputs")
     """
-    import os
-    from pathlib import Path
     os.makedirs(output_dir, exist_ok=True)
     output_path = Path(output_dir) / "report.json"
 
@@ -159,7 +161,107 @@ def save_report(report, output_dir="outputs"):
     with open(output_path, "w") as f:
         json.dump(report, f, indent=4)
 
-    print(f"\n📄 Report saved to: {output_path.resolve()}")
+    print(f"\nReport saved to: {output_path.resolve()}")
+    return output_path
+
+
+def save_parts_report(aggregated_report, output_dir="outputs"):
+    """
+    Save parts-only report to separate JSON file.
+    
+    Args:
+        aggregated_report: The aggregated report dictionary
+        output_dir: Directory to save the report (default: "outputs")
+    
+    Returns:
+        Path to the saved file
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    
+    parts_report = {
+        "vehicle": aggregated_report["vehicle"],
+        "timestamp": aggregated_report.get("timestamp", datetime.now().isoformat()),
+        "parts_summary": {
+            "total_damages": aggregated_report["summary"]["total_damages"],
+            "total_part_cost": aggregated_report["summary"]["total_part_cost"]
+        },
+        "damaged_parts": [
+            {
+                "part": part["part"],
+                "type_of_damage": part["type_of_damage"],
+                "severity": part["severity"],
+                "part_cost": part["part_cost"]
+            }
+            for part in aggregated_report["damaged_parts"]
+        ]
+    }
+    
+    # Include shopping guides if available
+    if "shopping_guides" in aggregated_report:
+        parts_report["shopping_guides"] = aggregated_report["shopping_guides"]
+    
+    output_path = Path(output_dir) / "parts_report.json"
+    
+    # Creates a new report file if one already exists (does not overwrite)
+    counter = 1
+    while output_path.exists():
+        output_path = Path(f"{output_dir}/parts_report({counter}).json")
+        counter += 1
+    
+    with open(output_path, 'w') as f:
+        json.dump(parts_report, f, indent=4)
+    
+    print(f"Parts report saved: {output_path.resolve()}")
+    return output_path
+
+
+def save_labor_report(aggregated_report, output_dir="outputs"):
+    """
+    Save labor-only report to separate JSON file.
+    
+    Args:
+        aggregated_report: The aggregated report dictionary
+        output_dir: Directory to save the report (default: "outputs")
+    
+    Returns:
+        Path to the saved file
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    
+    labor_report = {
+        "vehicle": aggregated_report["vehicle"],
+        "timestamp": aggregated_report.get("timestamp", datetime.now().isoformat()),
+        "labor_summary": {
+            "total_damages": aggregated_report["summary"]["total_damages"],
+            "total_labor_hours": aggregated_report["summary"]["total_labor_hours"],
+            "total_labor_cost": aggregated_report["summary"]["total_labor_cost"],
+            "labor_rate": aggregated_report["damaged_parts"][0].get("labor_rate", "N/A") if aggregated_report["damaged_parts"] else "N/A"
+        },
+        "labor_details": [
+            {
+                "part": part["part"],
+                "type_of_damage": part["type_of_damage"],
+                "severity": part["severity"],
+                "labor_hours": part["labor_hours"],
+                "labor_rate": part.get("labor_rate", "N/A"),
+                "labor_cost": part["labor_cost"]
+            }
+            for part in aggregated_report["damaged_parts"]
+        ]
+    }
+    
+    output_path = Path(output_dir) / "labor_report.json"
+    
+    # Creates a new report file if one already exists (does not overwrite)
+    counter = 1
+    while output_path.exists():
+        output_path = Path(f"{output_dir}/labor_report({counter}).json")
+        counter += 1
+    
+    with open(output_path, 'w') as f:
+        json.dump(labor_report, f, indent=4)
+    
+    print(f"Labor report saved: {output_path.resolve()}")
     return output_path
 
 
