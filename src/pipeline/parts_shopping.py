@@ -7,7 +7,7 @@ import json
 from typing import Dict, List
 
 # Popular online auto parts retailers
-with open("./src/cost_data/parts_retailers.json", "r") as f:
+with open("./src/cost_data/parts_retailer.json", "r") as f:
     PARTS_RETAILERS = json.load(f)
 
 # Part name mapping for better search results
