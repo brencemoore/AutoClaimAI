@@ -104,7 +104,12 @@ def main():
     print("GENERATING REPORT")
     print("="*70 + "\n")
     
-    aggregated_report = report_gen.aggregate_reports(reports)
+    output = report_gen.aggregate_reports(reports)
+    aggregated_report = output[0]
+    
+    if include_shopping:
+        shopping_guides = output[1]
+    
 
     # Print summary to console
     report_gen.print_report_summary(aggregated_report)
@@ -115,21 +120,24 @@ def main():
     print("="*70 + "\n")
     
     # Save complete report (original)
-    json_output = report_gen.save_report(aggregated_report)
+    json_report_output = report_gen.save_report(aggregated_report, filename="report")
     
-    # Save separate parts and labor reports
-    parts_output = report_gen.save_parts_report(aggregated_report)
-    labor_output = report_gen.save_labor_report(aggregated_report)
+    if include_shopping:
+        json_shopping_output = report_gen.save_report(shopping_guides, filename="shopping_guide")
+        complete_report = aggregated_report
+        complete_report["shopping_guides"] = shopping_guides
+    else:
+        json_shopping_output = None
     
     # Save shopping guide if included
-    if include_shopping and "shopping_guides" in aggregated_report:
-        shopping_output = report_gen.save_shopping_guide_text(aggregated_report)
+    if include_shopping and "shopping_guides" in complete_report:
+        shopping_output = report_gen.save_shopping_guide_text(complete_report)
         if shopping_output:
             print(f"\nTIP: Check the shopping guide for where to buy parts!")
             print(f"   File: {shopping_output}")
     
     # Print next steps
-    report_gen.print_next_steps(json_output, parts_output, labor_output)
+    report_gen.print_next_steps(json_report_output, json_shopping_output)
     
     print("\nReport complete! Thank you for using AutoClaimAI.")
     print("="*70 + "\n")

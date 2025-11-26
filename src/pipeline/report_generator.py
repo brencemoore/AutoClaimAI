@@ -135,12 +135,13 @@ def aggregate_reports(reports):
     
     # Add shopping guides if available
     if shopping_guides:
-        aggregated_report["shopping_guides"] = shopping_guides
+        return [aggregated_report, shopping_guides]
+    
+    else:
+        return [aggregated_report, None]
 
-    return aggregated_report
 
-
-def save_report(report, output_dir="outputs"):
+def save_report(report, output_dir="outputs", filename="report"):
     """
     Save the aggregated report to a JSON file in the outputs folder.
     
@@ -149,12 +150,12 @@ def save_report(report, output_dir="outputs"):
         output_dir: Directory to save the report (default: "outputs")
     """
     os.makedirs(output_dir, exist_ok=True)
-    output_path = Path(output_dir) / "report.json"
+    output_path = Path(output_dir) / f"{filename}.json"
 
     # Creates a new report file if one already exists (does not overwrite)
     counter = 1    
     while output_path.exists():
-        output_path = Path(f"{output_dir}/report({counter}).json")
+        output_path = Path(f"{output_dir}/{filename}({counter}).json")
         counter += 1
 
     # Save aggregated report to outputs folder
@@ -162,106 +163,6 @@ def save_report(report, output_dir="outputs"):
         json.dump(report, f, indent=4)
 
     print(f"\nReport saved to: {output_path.resolve()}")
-    return output_path
-
-
-def save_parts_report(aggregated_report, output_dir="outputs"):
-    """
-    Save parts-only report to separate JSON file.
-    
-    Args:
-        aggregated_report: The aggregated report dictionary
-        output_dir: Directory to save the report (default: "outputs")
-    
-    Returns:
-        Path to the saved file
-    """
-    os.makedirs(output_dir, exist_ok=True)
-    
-    parts_report = {
-        "vehicle": aggregated_report["vehicle"],
-        "timestamp": aggregated_report.get("timestamp", datetime.now().isoformat()),
-        "parts_summary": {
-            "total_damages": aggregated_report["summary"]["total_damages"],
-            "total_part_cost": aggregated_report["summary"]["total_part_cost"]
-        },
-        "damaged_parts": [
-            {
-                "part": part["part"],
-                "type_of_damage": part["type_of_damage"],
-                "severity": part["severity"],
-                "part_cost": part["part_cost"]
-            }
-            for part in aggregated_report["damaged_parts"]
-        ]
-    }
-    
-    # Include shopping guides if available
-    if "shopping_guides" in aggregated_report:
-        parts_report["shopping_guides"] = aggregated_report["shopping_guides"]
-    
-    output_path = Path(output_dir) / "parts_report.json"
-    
-    # Creates a new report file if one already exists (does not overwrite)
-    counter = 1
-    while output_path.exists():
-        output_path = Path(f"{output_dir}/parts_report({counter}).json")
-        counter += 1
-    
-    with open(output_path, 'w') as f:
-        json.dump(parts_report, f, indent=4)
-    
-    print(f"Parts report saved: {output_path.resolve()}")
-    return output_path
-
-
-def save_labor_report(aggregated_report, output_dir="outputs"):
-    """
-    Save labor-only report to separate JSON file.
-    
-    Args:
-        aggregated_report: The aggregated report dictionary
-        output_dir: Directory to save the report (default: "outputs")
-    
-    Returns:
-        Path to the saved file
-    """
-    os.makedirs(output_dir, exist_ok=True)
-    
-    labor_report = {
-        "vehicle": aggregated_report["vehicle"],
-        "timestamp": aggregated_report.get("timestamp", datetime.now().isoformat()),
-        "labor_summary": {
-            "total_damages": aggregated_report["summary"]["total_damages"],
-            "total_labor_hours": aggregated_report["summary"]["total_labor_hours"],
-            "total_labor_cost": aggregated_report["summary"]["total_labor_cost"],
-            "labor_rate": aggregated_report["damaged_parts"][0].get("labor_rate", "N/A") if aggregated_report["damaged_parts"] else "N/A"
-        },
-        "labor_details": [
-            {
-                "part": part["part"],
-                "type_of_damage": part["type_of_damage"],
-                "severity": part["severity"],
-                "labor_hours": part["labor_hours"],
-                "labor_rate": part.get("labor_rate", "N/A"),
-                "labor_cost": part["labor_cost"]
-            }
-            for part in aggregated_report["damaged_parts"]
-        ]
-    }
-    
-    output_path = Path(output_dir) / "labor_report.json"
-    
-    # Creates a new report file if one already exists (does not overwrite)
-    counter = 1
-    while output_path.exists():
-        output_path = Path(f"{output_dir}/labor_report({counter}).json")
-        counter += 1
-    
-    with open(output_path, 'w') as f:
-        json.dump(labor_report, f, indent=4)
-    
-    print(f"Labor report saved: {output_path.resolve()}")
     return output_path
 
 
@@ -327,7 +228,7 @@ def print_report_summary(aggregated_report):
     return
 
 
-def print_next_steps(include_shopping, json_output, parts_output, labor_output):
+def print_next_steps(include_shopping, json_output, shopping_output="No shopping guide generated"):
     """
     Print next steps for the user after report generation.
     
@@ -344,8 +245,7 @@ def print_next_steps(include_shopping, json_output, parts_output, labor_output):
     if include_shopping:
         print(f"\n1. Review reports:")
         print(f"   • Complete breakdown: {json_output}")
-        print(f"   • Parts only: {parts_output}")
-        print(f"   • Labor only: {labor_output}")
+        print(f"   • Shopping guide only: {shopping_output}")
         print(f"2. Check shopping guide for parts pricing options")
         print(f"3. Visit online retailers to compare actual prices:")
         print(f"   • RockAuto.com - Huge selection, competitive prices")
@@ -357,8 +257,7 @@ def print_next_steps(include_shopping, json_output, parts_output, labor_output):
     else:
         print(f"\n1. Review reports:")
         print(f"   • Complete breakdown: {json_output}")
-        print(f"   • Parts only: {parts_output}")
-        print(f"   • Labor only: {labor_output}")
+        print(f"   • Shopping guide only: {shopping_output}")
         print(f"2. Get quotes from local repair shops")
         print(f"3. Run again with shopping guide for parts pricing info")
     
