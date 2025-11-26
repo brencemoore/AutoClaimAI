@@ -4,8 +4,6 @@
 - The following components still need to be implemented or improved:
 	- Creating or integrating a cost table for estimation
 	- Evaluating cost estimation
-	- Evaluating damaged part severity
-	- Evaluating the type of damage
 
 - The most critical parts to measure and refine are:
 	- Damaged part classification
@@ -106,8 +104,8 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 	- Dataset used:  https://www.kaggle.com/datasets/prajwalbhamere/car-damage-severity-dataset
 - Damage type:
 	- Model source:  https://huggingface.co/beingamit99/car_damage_detection
-	- Google Colab notebook:  
-	- Dataset used:  
+	- Google Colab notebook:  https://colab.research.google.com/drive/1ZmUPRiCWr56zcHdCqCqHoiXzjBAybBfb?usp=sharing
+	- Dataset used:  https://www.kaggle.com/datasets/gauravduttakiit/vehicle-damage-identification
 - Cost prediction:
 	- Model source:  
 	- Google Colab notebook:  
