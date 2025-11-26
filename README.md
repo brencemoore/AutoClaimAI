@@ -32,7 +32,7 @@ AutoClaimAI is an automated vehicle damage assessment tool that uses AI to detec
 ## Installation
 1. Clone this repository:
 	```
-	git clone <repo-url>
+	git clone https://github.com/brencemoore/AutoClaimAI
 	cd AutoClaimAI
 	```
 2. Install dependencies:
