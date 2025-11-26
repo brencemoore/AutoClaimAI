@@ -26,6 +26,7 @@ AutoClaimAI is an automated vehicle damage assessment tool that uses AI to detec
 - Detects and classifies car damage from images
 - Estimates severity of detected damage (minor, moderate, severe)
 - Processes all images in a folder or a single image
+- Estimates costs of car damages based off of researched tables and info
 - Outputs structured reports for further analysis
 
 ## Installation
@@ -77,35 +78,45 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 		- `car_classification.py` - Contains function for classifying make and model of a car
 		- `detect_damage.py` - Contains functions for classifying info from damaged parts of a car
 		- `estimate_cost.py` - Contains data and functions to estimate the cost of damages from aggregated data
-		- `report_generator.py` - A function that creates the output report files using functinos from `car_classification.py`, `detect_damage.py`, and `estimate_cost.py`
+		- `parts_shopping.py` - Generates infor for shopping guidance based off of researched data and .json file
+		- `report_generator.py` - A function that creates the output report files using functions from `car_classification.py`, `detect_damage.py`, `estimate_cost.py`, and `parts_shopping.py`
 	- `models/` - Locally stored models
 		- `car-damage.pt` - Stores pre-trained weights for classifying severity of damages
 		- `car-part.pt` - Stores pre-trained weights for classifying part that is damaged
-- `input/` - Folder for input images
-- `outputs/` - Folder for output reports (one `.json` per run)
-- `notebooks/` - Jupyter notebooks for evaluation
-	- `evaluate_car_classification.ipynb` - Creates a confusion matrix and measures precision, recall, and f1 for make and model classification
+	- `cost_data/` - Contains .json data for shopping data
+		- `labor_rates.json`
+		- `labor_time_table.json`
+		- `part_cost_table.json`
+		- `part_search_terms.json`
+		- `parts_retailer.json`
+- `input/`
+- `outputs/`
+- `notebooks/` - Jupyter notebooks for evaluating models with precision, recall, and f1
+	- `evaluate_car_classification.ipynb`
+	- `evaluate_car_part_classification.ipynb`
+	- `evaluate_damage_type.ipynb`
+	- `evaluating_damage_severity.ipynb`
 - `main.py` - Runs entire AI pipeline
 - `requirements.txt` - Contains libraries needed that may not be pre-installed
 
 
 ## Model Source, Evaluation and Metrics Notebooks, and Dataset Links
 - Make and model:
-	- Model source:  https://huggingface.co/dima806/car_models_image_detection
-	- Google Colab notebook:  https://colab.research.google.com/drive/1OHagyo6YzcB0_K5hX7kqSqNKWhLvGGfv?usp=sharing
-	- Dataset used:  https://www.kaggle.com/datasets/ashfaqsyed/cars-collection-dataset/data
+	- Model source:  [dima806/car_models_image_detection](https://huggingface.co/dima806/car_models_image_detection)
+	- Google Colab notebook:  [evaluate_car_part_classification.ipynb](https://colab.research.google.com/drive/1OHagyo6YzcB0_K5hX7kqSqNKWhLvGGfv?usp=sharing)
+	- Dataset used:  [Cars Collection Dataset](https://www.kaggle.com/datasets/ashfaqsyed/cars-collection-dataset/data)
 - Damaged part:
-	- Model source:  https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8
-	- Google Colab notebook:  https://colab.research.google.com/drive/1ubblz5FCEhtWhqSUsrH4MnHS5meu-kyq?usp=sharing
-	- Dataset used:  https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8 (had to do a lot of cleaning)
+	- Model source:  [suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8](https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8)
+	- Google Colab notebook:  [evaluate_car_part_classification.ipynb](https://colab.research.google.com/drive/1ubblz5FCEhtWhqSUsrH4MnHS5meu-kyq?usp=sharing)
+	- Dataset used:  [suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8/Data](https://github.com/suryaremanan/Damaged-Car-parts-prediction-using-YOLOv8) (had to do a lot of cleaning)
 - Damage severity:
-	- Model source:  https://huggingface.co/nezahatkorkmaz/car-damage-level-detection-yolov8
-	- Google Colab notebook:  https://colab.research.google.com/drive/1nuZP2vxpEATY-TVELBEF35pzo8vJfHzm?usp=sharing
-	- Dataset used:  https://www.kaggle.com/datasets/prajwalbhamere/car-damage-severity-dataset
+	- Model source:  [nezahatkorkmaz/car-damage-level-detection-yolov8](https://huggingface.co/nezahatkorkmaz/car-damage-level-detection-yolov8)
+	- Google Colab notebook:  [evaluating_damage_severity.ipynb](https://colab.research.google.com/drive/1nuZP2vxpEATY-TVELBEF35pzo8vJfHzm?usp=sharing)
+	- Dataset used:  [Car Damage Severity Dataset](https://www.kaggle.com/datasets/prajwalbhamere/car-damage-severity-dataset)
 - Damage type:
-	- Model source:  https://huggingface.co/beingamit99/car_damage_detection
-	- Google Colab notebook:  https://colab.research.google.com/drive/1ZmUPRiCWr56zcHdCqCqHoiXzjBAybBfb?usp=sharing
-	- Dataset used:  https://www.kaggle.com/datasets/gauravduttakiit/vehicle-damage-identification
+	- Model source:  [beingamit99/car_damage_detection](https://huggingface.co/beingamit99/car_damage_detection)
+	- Google Colab notebook:  [evaluate_damage_type.ipynb](https://colab.research.google.com/drive/1ZmUPRiCWr56zcHdCqCqHoiXzjBAybBfb?usp=sharing)
+	- Dataset used:  [Vehicle Damage Identification](https://www.kaggle.com/datasets/gauravduttakiit/vehicle-damage-identification)
 - Cost prediction:
 	- Model source:  
 	- Google Colab notebook:  
