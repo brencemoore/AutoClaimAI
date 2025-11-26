@@ -1,56 +1,153 @@
 '''
-Main file to run the AutoClaimAI pipeline. Runs report_gernerator.py to generate a report based off
+Main file to run the AutoClaimAI pipeline. Runs report_generator.py to generate a report based off
 of all images in a given input folder.
+
+Includes shopping guide feature without requiring API keys.
 '''
 
 import os
 import sys
-import json
 from pathlib import Path
 import src.pipeline.report_generator as report_gen
 
+def print_banner():
+    """Print a nice banner for the application"""
+    print("\n" + "="*70)
+    print(" "*20 + "AUTO CLAIM AI")
+    print(" "*15 + "Vehicle Damage Assessment")
+    print("="*70 + "\n")
+
+def get_user_input():
+    """Get user input for vehicle details and options"""
+    print("VEHICLE INFORMATION")
+    print("-" * 70)
+    
+    car_year = input("Enter the year of your vehicle: ").strip()
+    while not car_year.isdigit() or len(car_year) != 4:
+        print("Please enter a valid 4-digit year (e.g., 2020)")
+        car_year = input("Enter the year of your vehicle: ").strip()
+    
+    state = input("Enter your state (or press Enter for national average): ").strip()
+    if state:
+        state = state.replace(" ", "_")
+    else:
+        state = None
+    
+    # Ask about shopping guide
+    print("\nREPORT OPTIONS")
+    print("-" * 70)
+    print("Would you like to include a parts shopping guide?")
+    print("This will provide price ranges and links to online retailers.")
+    
+    include_shopping = input("Include shopping guide? (Y/n): ").strip().lower()
+    include_shopping = include_shopping != 'n'  # Default to yes unless they say no
+    
+    return car_year, state, include_shopping
+
 def main():    
+    print_banner()
+    
     # Determine folder path based off of number of user arguments
-    # Default to "input" folder if no arguments provided
     if len(sys.argv) == 1:
         input_path = Path(__file__).resolve().parent / "input"
-        print(f"\nIf you wish to select a specific input folder, please provide the folder path as a command line argument when running the program.\n")
+        print(f"Using default input folder: {input_path}")
+        print(f"Tip: Run 'python main.py /path/to/folder' to use a different folder\n")
         
-    # Check for correct number of arguments 
-    elif len(sys.argv) != 2:
-        print("Usage: python main.py /path/to/image_folder")
+    elif len(sys.argv) > 2:
+        print("Usage: python main.py [/path/to/image_folder]")
         return
-
-    # Uses User provided folder path
     else:
         input_path = sys.argv[1]
 
     if not os.path.isdir(input_path):
-        print("Invalid folder path.")
+        print(f"Error: Invalid folder path: {input_path}")
         return
 
-    # Creates an array of images from the selected input folder
+    # Find images
     supported_ext = (".jpg", ".jpeg", ".png", ".bmp")
     images = [os.path.join(input_path, f) for f in os.listdir(input_path) 
               if f.lower().endswith(supported_ext)]
 
     if not images:
-        print("No image files found.")
+        print(f"Error: No image files found in {input_path}")
+        print(f"Supported formats: {', '.join(supported_ext)}")
         return
 
-    car_year = input(f"\nEnter the year of your vehicle and press Enter to continue:  ")
-
-    # Generate and print aggregated report from each image
-    aggregated_report = report_gen.aggregate_reports([report_gen.generate_report(img, car_year) for img in images])
-
-    # Print aggregated report to console
-    print(f"Aggregated Report:")
-    print(json.dumps(aggregated_report, indent=4))
+    print(f"Found {len(images)} image(s) to process\n")
     
-    # Save aggregated report to outputs folder
-    report_gen.save_report(aggregated_report)
+    # Get user input
+    car_year, state, include_shopping = get_user_input()
     
+    print(f"\n{'='*70}")
+    print("PROCESSING IMAGES")
+    print("="*70 + "\n")
+
+    # Generate reports for each image
+    reports = []
+    for i, img in enumerate(images, 1):
+        print(f"[{i}/{len(images)}] Processing: {os.path.basename(img)}")
+        try:
+            report = report_gen.generate_report(img, car_year, state, include_shopping)
+            reports.append(report)
+            print(f"Complete - {report['damaged_part']['part']} ({report['damaged_part']['severity']})")
+        except Exception as e:
+            print(f"Error: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    if not reports:
+        print("\nNo reports generated successfully.")
+        return
+
+    # Generate aggregated report
+    print(f"\n{'='*70}")
+    print("GENERATING REPORT")
+    print("="*70 + "\n")
+    
+    output = report_gen.aggregate_reports(reports)
+    aggregated_report = output[0]
+    
+    if include_shopping:
+        shopping_guides = output[1]
+    
+
+    # Print summary to console
+    report_gen.print_report_summary(aggregated_report)
+    
+    # Save reports
+    print(f"\n{'='*70}")
+    print("SAVING REPORTS")
+    print("="*70 + "\n")
+    
+    # Save complete report (original)
+    json_report_output = report_gen.save_report(aggregated_report, filename="report")
+    
+    if include_shopping:
+        json_shopping_output = report_gen.save_report(shopping_guides, filename="shopping_guide")
+        complete_report = aggregated_report
+        complete_report["shopping_guides"] = shopping_guides
+    else:
+        json_shopping_output = None
+    
+    # Save shopping guide if included
+    if include_shopping and "shopping_guides" in complete_report:
+        shopping_output = report_gen.save_shopping_guide_text(complete_report)
+        if shopping_output:
+            print(f"\nTIP: Check the shopping guide for where to buy parts!")
+            print(f"   File: {shopping_output}")
+    
+    # Print next steps
+    report_gen.print_next_steps(json_report_output, json_shopping_output)
+    
+    print("\nReport complete! Thank you for using AutoClaimAI.")
+    print("="*70 + "\n")
 
 if __name__ == "__main__":
-    main()
-    
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nProcess interrupted by user")
+    except Exception as e:
+        print(f"\n\nUnexpected error: {e}")
+        import traceback
+        traceback.print_exc()

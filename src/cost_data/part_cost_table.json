@@ -1,0 +1,11 @@
+{
+  "Door": { "Minor": 200, "Moderate": 500, "Severe": 1200 },
+  "Bumper": { "Minor": 150, "Moderate": 400, "Severe": 900 },
+  "Hood": { "Minor": 250, "Moderate": 600, "Severe": 1400 },
+  "Window": { "Minor": 100, "Moderate": 250, "Severe": 450 },
+  "Headlight": { "Minor": 150, "Moderate": 300, "Severe": 600 },
+  "Mirror": { "Minor": 100, "Moderate": 200, "Severe": 400 },
+  "Body/Unknown": { "Minor": 300, "Moderate": 700, "Severe": 1500 },
+  "Wind Shield": { "Minor": 200, "Moderate": 400, "Severe": 800 },
+  "Default": 500
+}

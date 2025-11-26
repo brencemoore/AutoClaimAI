@@ -3,73 +3,117 @@ Estimates the cost of car repairs based on detected damage and car details.
 Will estimate labor, part, and total costs.
 '''
 
-# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
-# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
-# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
-# NOT DONE | NOT DONE | NOT DONE | NOT DONE | NOT DONE
-
-# Will be a function to be called from report_generator.py
-
 import json
+from pathlib import Path
 
-# Flat rate gathered from "https://autoleap.com/blog/average-automotive-repair-labor-rates-by-state/", gathered 15 November 2025
-# May not be relevant and may be better to generalize and not consider state.
-flat_rate_by_state = {
-    {"Maine": 135},
-    {"New_Hampshire": 127.5},
-    {"Vermont": 122.5},
-    {"Massachusetts": 132.5},
-    {"Rhode_Island": 125},
-    {"Connecticut": 132.5},
-    {"New_York": 137.5},
-    {"New_Jersey": 142.5},
-    {"Pennsylvania": 137.5},
-    {"Ohio": 135},
-    {"Michigan": 140},
-    {"Indiana": 140},
-    {"Illinois": 132.5},
-    {"Wisconsin": 137.5},
-    {"Minnesota": 142.5},
-    {"Iowa": 137.5},
-    {"Missouri": 142.5},
-    {"North_Dakota": 137.5},
-    {"South_Dakota": 140},
-    {"Nebraska": 142.5},
-    {"Kansas": 142.5},
-    {"Delaware": 137.5},
-    {"Maryland": 140},
-    {"Virginia": 137.5},
-    {"West_Virginia": 142.5},
-    {"North_Carolina": 95},
-    {"South_Carolina": 137.5},
-    {"Georgia": 145},
-    {"Florida": 142.5},
-    {"Kentucky": 145},
-    {"Tennessee": 145},
-    {"Mississippi": 152.5},
-    {"Alabama": 145},
-    {"Oklahoma": 142.5},
-    {"Texas": 142.5},
-    {"Arkansas": 145},
-    {"Louisiana": 145},
-    {"Idaho": 137.5},
-    {"Montana": 145},
-    {"Wyoming": 152.5},
-    {"Nevada": 135},
-    {"Utah": 137.5},
-    {"Colorado": 142.5},
-    {"Arizona": 132.5},
-    {"New_Mexico": 140},
-    {"Alaska": 142.5},
-    {"Washington": 140},
-    {"Oregon": 135},
-    {"California": 165},
-    {"Hawaii": 130}
-}
+# Labor rates by state ($/hour) - Source: autoleap.com
+
+with open("./src/cost_data/labor_rates.json", "r") as f:
+    LABOR_RATES = json.load(f)
+
+# National average labor rate
+NATIONAL_AVG_LABOR_RATE = LABOR_RATES.get("National_Average")  # $/hour
+
+# Labor time estimates (hours) based on damage type and severity
+# Format: {part: {severity: {damage_type: hours}}}
+
+with open("./src/cost_data/labor_time_table.json", "r") as f:
+    LABOR_TIME_TABLE = json.load(f)
+
+# Part cost estimates ($) based on part type and severity
+# Format: {part: {severity: base_cost}}
+
+with open("./src/cost_data/part_cost_table.json", "r") as f:
+    PART_COST_TABLE = json.load(f)
+
+# Default values for unknown cases
+DEFAULT_LABOR_HOURS = LABOR_TIME_TABLE.get("Default")
+DEFAULT_PART_COST = PART_COST_TABLE.get("Default")
 
 
-# Service Type	Avg. Repair Time (Hours)	Avg. Hourly Rate (U.S.)	Avg. Hourly Rate (Chicago)	Estimated Labor Cost (U.S.)	Estimated Labor Cost (Chicago)
-# Small Dent Repair	1 – 1.5	$90	$110	$90 – $135	$110 – $165
-# Bumper Repair or Replacement	2 – 3	$95	$125	$190 – $285	$250 – $375
-# Full Repaint (per panel)	3 – 4	$100	$140	$300 – $400	$420 – $560
-# Collision Frame Straightening	4 – 6	$105	$145	$420 – $630	$580 – $870
+def get_labor_hours(part, severity, damage_type):
+    """
+    Get estimated labor hours for a specific repair.
+    
+    Args:
+        part: Damaged car part (e.g., "Door", "Bumper")
+        severity: Damage severity ("Minor", "Moderate", "Severe")
+        damage_type: Type of damage (e.g., "dent", "scratch")
+    
+    Returns:
+        Estimated labor hours (float)
+    """
+    # Normalize damage type to lowercase
+    damage_type_lower = damage_type.lower()
+    
+    # Check if we have data for this combination
+    if part in LABOR_TIME_TABLE:
+        if severity in LABOR_TIME_TABLE[part]:
+            # Try exact match first
+            if damage_type_lower in LABOR_TIME_TABLE[part][severity]:
+                return LABOR_TIME_TABLE[part][severity][damage_type_lower]
+            # Default to "damage" if specific type not found
+            elif "damage" in LABOR_TIME_TABLE[part][severity]:
+                return LABOR_TIME_TABLE[part][severity]["damage"]
+    
+    # Return default if no match found
+    return DEFAULT_LABOR_HOURS
+
+
+def get_part_cost(part, severity):
+    """
+    Get estimated part cost for a specific repair.
+    
+    Args:
+        part: Damaged car part
+        severity: Damage severity
+    
+    Returns:
+        Estimated part cost (float)
+    """
+    if part in PART_COST_TABLE and severity in PART_COST_TABLE[part]:
+        return PART_COST_TABLE[part][severity]
+    return DEFAULT_PART_COST
+
+
+def calculate_labor_cost(labor_hours, state=None):
+    """
+    Calculate labor cost based on hours and state.
+    
+    Args:
+        labor_hours: Number of labor hours
+        state: State name (optional, uses national average if None)
+    
+    Returns:
+        Labor cost (float)
+    """
+    labor_rate = LABOR_RATES.get(state, NATIONAL_AVG_LABOR_RATE)
+    return labor_hours * labor_rate
+
+
+def estimate_repair_cost(part, severity, damage_type, state=None):
+    """
+    Estimate total repair cost for a single damage.
+    
+    Args:
+        part: Damaged car part
+        severity: Damage severity
+        damage_type: Type of damage
+        state: State for labor rate (optional)
+    
+    Returns:
+        Dictionary with cost breakdown
+    """
+    labor_hours = get_labor_hours(part, severity, damage_type)
+    part_cost = get_part_cost(part, severity)
+    labor_cost = calculate_labor_cost(labor_hours, state)
+    total_cost = part_cost + labor_cost
+    
+    return {
+        "part_cost": round(part_cost, 2),
+        "labor_hours": round(labor_hours, 2),
+        "labor_rate": LABOR_RATES.get(state, NATIONAL_AVG_LABOR_RATE),
+        "labor_cost": round(labor_cost, 2),
+        "estimated_cost": round(total_cost, 2)
+    }
+

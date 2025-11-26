@@ -1,0 +1,41 @@
+{
+  "RockAuto": {
+    "url": "https://www.rockauto.com",
+    "search_url": "https://www.rockauto.com/en/catalog/{year},{make},{model}",
+    "pros": ["Huge selection", "Competitive prices", "Parts diagrams"],
+    "cons": ["Shipping can be expensive", "Multiple warehouses"],
+    "quality_tiers": ["Economy", "Daily Driver", "Premium"]
+  },
+  "PartsGeek": {
+    "url": "https://www.partsgeek.com",
+    "search_url": "https://www.partsgeek.com/catalog/{year}/{make}/{model}",
+    "pros": [
+      "Free shipping over $99",
+      "Good customer service",
+      "Fast shipping"
+    ],
+    "cons": ["Limited premium brands"],
+    "quality_tiers": ["Value", "Standard", "Premium"]
+  },
+  "AutoZone": {
+    "url": "https://www.autozone.com",
+    "search_url": "https://www.autozone.com/parts/{year}/{make}/{model}",
+    "pros": ["Local pickup available", "Rewards program", "In-store support"],
+    "cons": ["Higher prices", "Limited body parts"],
+    "quality_tiers": ["Economy", "Standard"]
+  },
+  "CarParts.com": {
+    "url": "https://www.carparts.com",
+    "search_url": "https://www.carparts.com/{year}-{make}-{model}",
+    "pros": ["90-day returns", "Good warranties", "Fast shipping"],
+    "cons": ["Limited selection on older cars"],
+    "quality_tiers": ["Standard", "Premium"]
+  },
+  "1A Auto": {
+    "url": "https://www.1aauto.com",
+    "search_url": "https://www.1aauto.com/{year}-{make}-{model}",
+    "pros": ["Video installation guides", "Good quality", "Detailed fitment"],
+    "cons": ["Slightly higher prices"],
+    "quality_tiers": ["Standard", "Premium"]
+  }
+}
