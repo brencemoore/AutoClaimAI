@@ -1,13 +1,3 @@
-# PLEASE MAKE YOUR OWN BRANCH
-
-### Remaining Tasks
-- The following components still need to be implemented or improved:
-	- Creating or integrating a cost table for estimation
-	- Evaluating cost estimation
-
-- The most critical parts to measure and refine are:
-	- Damaged part classification
-	- Cost table estimation
 
 ### Notebooks for evaluation
 - If you want to make your own evaluation create a google colab notebook and upload your data and/or weight to drive and develop that way.
