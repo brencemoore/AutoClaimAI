@@ -1,13 +1,4 @@
 
-### Notebooks for evaluation
-- If you want to make your own evaluation create a google colab notebook and upload your data and/or weight to drive and develop that way.
-
-### Data source for repair times and parts
-https://charm.li/ - free open sources is fairly comprehensive from 1986 to 2013
-https://vehicledatabases.com/ has a VIN decoding api for searching for vehicle data and parts + labor pricing
-Carvis.ai AI native tool for doing the same as vehicle database in an AI native way
-https://www.motor.com/wp-content/uploads/daas-estimated-work-times-product-description.pdf - RESTful api call that provides up to date parts and labor times along with cost estimates paid
-
 # AutoClaimAI
 
 AutoClaimAI is an automated vehicle damage assessment tool that uses AI to detect, classify, and estimate the severity of car damages from images. It processes images in bulk or individually and generates structured reports to assist with insurance claims or repair estimates.
@@ -107,30 +98,14 @@ This project is designed for terminal use, but could easily be ported to a GUI, 
 	- Model source:  [beingamit99/car_damage_detection](https://huggingface.co/beingamit99/car_damage_detection)
 	- Google Colab notebook:  [evaluate_damage_type.ipynb](https://colab.research.google.com/drive/1ZmUPRiCWr56zcHdCqCqHoiXzjBAybBfb?usp=sharing)
 	- Dataset used:  [Vehicle Damage Identification](https://www.kaggle.com/datasets/gauravduttakiit/vehicle-damage-identification)
-- Cost prediction:
-	- Model source:  
-	- Google Colab notebook:  
-	- Dataset used:  
+- Combined evaluation:  
+	- Google Colab notebook:  [combine_evaluation_results](https://colab.research.google.com/drive/1rSocNmLAb1LvU5Dhycl4-wb4OvG_wx-s?usp=sharing)
 
 
-## Developer Notes
+### Data source for repair times and parts
+https://charm.li/ - free open sources is fairly comprehensive from 1986 to 2013
+https://vehicledatabases.com/ has a VIN decoding api for searching for vehicle data and parts + labor pricing
+Carvis.ai AI native tool for doing the same as vehicle database in an AI native way
+https://www.motor.com/wp-content/uploads/daas-estimated-work-times-product-description.pdf - RESTful api call that provides up to date parts and labor times along with cost estimates paid
 
-### Pipeline Structure
-- The program's pipeline is structured so that `main.py` calls the `report_generator` module. The `report_generator` module then calls functions from various other Python files, each of which uses an AI model to determine the values for variables needed to create the report and estimate costs. This modular approach allows for easy extension and maintenance of the codebase.
 
-### Out-of-Scope Modules
-- The following module is likely out of scope and not needed for the main workflow:
-	- `read_plate.py`
-    - As of now it is deleted, but if more time is available we can maybe implement this.
-
-### Requirements and Dependencies
-- As development proceeds, add any new required libraries to `requirements.txt`.
-- When using a model, add a comment in the code specifying where the model was obtained from (e.g., Hugging Face link) for easier report writing and reproducibility.
-
-### Evaluation and Reporting
-- It is currently undecided whether model evaluations will be performed in a Jupyter notebook or in a separate Python file. Choose the approach that best fits your workflow and document your choice.
-
----
-
-## Contact
-For questions or support, please open an issue in this repository.
